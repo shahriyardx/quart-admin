@@ -26,11 +26,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3 :: Only",
     ],
-	entry_points ={ 
-		'console_scripts': [
-			'quart-admin = quart_admin:cli'
-		]
-	},
+    entry_points={"console_scripts": ["quart-admin = quart_admin:cli"]},
     keywords="quart, quart-admin",
     packages=find_packages(),
     python_requires=">=3.6, <4",
