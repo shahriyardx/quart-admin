@@ -11,13 +11,14 @@ STATIC_DIR = "static"
 
 @click.group(chain=True)
 def cli():
-    """Flask-maker"""
+    """Quart-admin - create scalable quart project in seconds."""
 
 
 @cli.command("startproject")
 @click.option("--name", "-n", help="Project name", default="")
-def start_project(name):
-    """Creates a flask project"""
+@click.option("--empty", "-e", help="Delete all files in the folder if its not empty", is_flag=True, default=False)
+def start_project(name, empty):
+    """Creates a quart project"""
     if not name:
         print("Project Name : ", end="")
         name = input()
@@ -25,7 +26,11 @@ def start_project(name):
     folder_name = slugify(name)
     app_name = folder_name.replace("-", "_")
 
-    with make_dir(folder_name, back=False, empty=True) as _:
+    with make_dir(folder_name, back=False, empty=empty) as error:
+        if error:
+            print(error)
+            return
+        
         create_file("app.py", APP_TEXT, {"{app_name}": app_name})
 
         with make_dir(app_name, back=False) as _:
@@ -41,14 +46,15 @@ def start_project(name):
                 create_file("style.css", STYLE_TEXT)
 
     print(
-        f"Flask project created. Use `cd {folder_name}` and open with your favourite code editor."
+        f"Quart project created. Use `cd {folder_name}` and open with your favourite code editor."
     )
 
 
 @cli.command("startapp")
 @click.option("--name", "-n", help="App/Blurprint name", default="")
-def start_app(name):
-    """Creates a app inside a flask app"""
+@click.option("--empty", "-e", help="Delete all files in the folder if its not empty", is_flag=True, default=False)
+def start_app(name, empty):
+    """Creates a app inside a quart app"""
     if not name:
         print("App Name : ", end="")
         name = input()
@@ -68,13 +74,17 @@ def start_app(name):
 
     if not is_project:
         return print(
-            "No flask project found on this directory. Can't create app here. Navigate to a project directory or create an app."
+            "No quart project found on this directory. Can't create app here. Navigate to a project directory or create an app."
         )
 
     os.chdir(project_dir)
 
     with make_dir("apps", back=True, empty=False) as _:
-        with make_dir(app_name, back=True) as _:
+        with make_dir(app_name, back=True, empty=empty) as error:
+            if error:
+                print(error)
+                return
+            
             create_file("__init__.py", BLP_TEXT, {"{app_name}": app_name})
             create_file("views.py", BLP_VIEWS_TEXT, {"{app_name}": app_name})
             create_file("errors.py", ERRORS_TEXT, {"{app_name}": app_name})
