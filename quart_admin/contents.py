@@ -29,7 +29,7 @@ from quart import Quart, render_template, make_response
 from .config import config
 
 app = Quart(__name__)
-app.config.from_object(config['development'])
+app.config.from_object(config['development']) # Change it to production for production use
 
 _apps = {}
 apps_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'apps')
