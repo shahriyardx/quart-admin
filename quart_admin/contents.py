@@ -157,7 +157,7 @@ from .errors import *
 
 VIEWS_TEXT = """
 from . import {app_name}
-from quart import Quart, render_template, make_response
+from quart import render_template, make_response
 
 @{app_name}.route('/')
 async def index():
