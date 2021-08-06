@@ -2,8 +2,8 @@ import os
 import click
 from .contents import *
 from slugify import slugify
-from .helpers import create_file
 from .context import make_dir, open_dir
+from .helpers import create_file
 
 TEMPLATES_DIR = "templates"
 STATIC_DIR = "static"
@@ -11,13 +11,13 @@ STATIC_DIR = "static"
 
 @click.group(chain=True)
 def cli():
-    """Quart-admin"""
+    """Flask-maker"""
 
 
 @cli.command("startproject")
 @click.option("--name", "-n", help="Project name", default="")
 def start_project(name):
-    """Creates a quart project"""
+    """Creates a flask project"""
     if not name:
         print("Project Name : ", end="")
         name = input()
@@ -31,6 +31,8 @@ def start_project(name):
         with make_dir(app_name, back=False) as _:
             create_file("__init__.py", INIT_TEXT, {"{app_name}": app_name})
             create_file("config.py", CONFIG_TEXT, {"{secret}": app_name})
+            create_file("views.py", VIEWS_TEXT)
+            create_file("urls.py", URLS_TEXT)
 
             with make_dir(TEMPLATES_DIR, back=True) as _:
                 create_file("index.html", INDEX_TEXT)
@@ -39,14 +41,14 @@ def start_project(name):
                 create_file("style.css", STYLE_TEXT)
 
     print(
-        f"Quart project created. Use `cd {folder_name}` and open with your favourite code editor."
+        f"Flask project created. Use `cd {folder_name}` and open with your favourite code editor."
     )
 
 
 @cli.command("startapp")
 @click.option("--name", "-n", help="App/Blurprint name", default="")
 def start_app(name):
-    """Creates a app inside a quart app"""
+    """Creates a app inside a flask app"""
     if not name:
         print("App Name : ", end="")
         name = input()
@@ -66,7 +68,7 @@ def start_app(name):
 
     if not is_project:
         return print(
-            "No quart project found on this directory. Can't create app here. Navigate to a project directory or create a project."
+            "No flask project found on this directory. Can't create app here. Navigate to a project directory or create an app."
         )
 
     os.chdir(project_dir)
@@ -74,8 +76,9 @@ def start_app(name):
     with make_dir("apps", back=True, empty=False) as _:
         with make_dir(app_name, back=True) as _:
             create_file("__init__.py", BLP_TEXT, {"{app_name}": app_name})
-            create_file("views.py", VIEWS_TEXT, {"{app_name}": app_name})
+            create_file("views.py", BLP_VIEWS_TEXT, {"{app_name}": app_name})
             create_file("errors.py", ERRORS_TEXT, {"{app_name}": app_name})
+            create_file("urls.py", URLS_TEXT)
 
     with open_dir(STATIC_DIR, back=True) as _:
         with make_dir(app_name, back=True) as _:
