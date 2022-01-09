@@ -8,15 +8,16 @@ def cli():
 
 @cli.command(name="start")
 @click.option("--debug", is_flag=True, help="Run app in debug mode.")
+@click.option("--host", default="0.0.0.0", help="Host to start the webserver.")
 @click.option("--port", default=5000, help="Port to start the webserver.")
-def _start(debug, port):
+def _start(host, debug, port):
     print("[+] Routes")
     for rule in app.url_map.iter_rules():
         if 'static/<path:filename>' not in str(rule):
             print(f'    http://localhost:{port}{rule}')
     print('\\n')
 
-    app.run(debug=debug, port=port)
+    app.run(host=host, debug=debug, port=port)
 
 if __name__ == "__main__":
     cli()
